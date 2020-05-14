@@ -1,0 +1,89 @@
+______________________________________________________My Assignment__________________________________________________________
+function love.load()
+    
+
+    pipeX = playingAreaWidth
+end
+
+function love.update(dt)
+    
+
+    pipeX = pipeX - (60 * dt)
+end
+
+function love.draw()
+    
+
+    love.graphics.rectangle(
+        'fill',
+        pipeX,
+        0,
+        pipeWidth,
+        pipeSpaceY
+    )
+    love.graphics.rectangle(
+        'fill',
+        pipeX,
+        pipeSpaceY + pipeSpaceHeight,
+        pipeWidth,
+        playingAreaHeight - pipeSpaceY - pipeSpaceHeight
+    )
+end
+--[[
+Pipe generator]]
+_________________________________________________________________________________________________________________________
+function ScoreState:enter(Params)
+self.score = params.score
+
+if self.score >= 10 then
+   self.medalImage = love.graphics.newImage('Goldmedal.png')
+elseif self.score >= 5 then
+   self.medalImage = love.graphics.newImage('Silvermedal.png')
+elseif score >= 3 then
+   self.medalImage = love.graphics.newImage('Bronzemedal.png')
+end
+--[[
+Medals Awarded]]
+__________________________________________________________________________________________________________________________
+PauseState = Class{__includes = BaseState}
+
+function PauseState:init()
+    self.timer = 0
+    self.enterParams = {}
+end
+
+function PauseState:update(dt)
+    self.timer = self.timer + dt
+    
+    if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+        self.enterParams = {
+            ['bird'] = self.bird,
+            ['pipePairs'] = self.pipePairs,
+            ['timer'] = self.timer,
+            ['score'] = self.score
+        }
+        self.timer = self.timer + 10
+
+        gStateMachine:change('play', self.enterParams)   
+    end
+end
+
+function PauseState:enter(enterParams)
+
+    scrolling = false
+    self.bird = enterParams.bird
+    self.pipePairs = enterParams.pipePairs
+    self.timer = enterParams.timer
+    self.score = enterParams.score
+end
+
+function PauseState:render()
+    love.graphics.setFont(flappyFont)
+    love.graphics.printf('The game paused!', 0, 64, VIRTUAL_WIDTH, 'center')
+
+    love.graphics.setFont(mediumFont)
+    love.graphics.printf('Press Enter to continue', 0, 100, VIRTUAL_WIDTH, 'center')
+    love.graphics.print(self.timer .. tostring(self.score), 8, 38)
+end
+--[[
+Game Pause Feature]]
