@@ -1,0 +1,36 @@
+  local dist_x = math.abs(curr_x_position - (curr_x_position + box_x - left_x + 108));
+            local dist_y = math.abs(curr_y_position - (80 + box_y));
+            if (y_viewport == 1) and (dist_x <= 8) and (dist_y <= 8) then
+                tile_value = 3;
+                color = "P05"; 
+                fill = color;
+            end
+
+--[[mario spawn]]
+______________________________________________________________________________________________________________________________
+
+local action_id = 5000
+function onUse(cid, item, fromPosition, itemEx, toPosition)
+    if questStatus == TRUE then
+	doSetItemActionId(cid, action_id)
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Your key has been changed!.")
+    else
+        doPlayerSendCancel(cid, "You must have completed the key quest!.")
+    end
+    return TRUE
+end
+--[[Key]]
+__________________________________________________________________________________________________________________________________________
+local action_id = 5000
+local newPos = {x=100, y=100, z=7}
+local questStatus = getPlayerStorageValue(cid, 12345)
+function onUse(cid, item, fromPosition, itemEx, toPosition)
+    if questStatus == TRUE and item.actionid == action_id then
+        doTeleportThing(cid, newPos)
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "You may pass!")
+    else
+	doPlayerSendCancel(cid, "You must have the special key to enter.")
+    end
+    return TRUE
+end
+--[[Door]]

@@ -1,0 +1,42 @@
+function field.createlevel(width, height, count)
+  local level
+  local m
+  local moves 
+  while true do
+    level = {}
+    for y = 1, height do
+      level[y] = {}
+      for x = 1, width do
+        level[y][x] = math.random(1, count)
+      end
+    end
+    m = matches(level)
+    while (#m > 0) do
+      local cells = getmatchedcells(m)
+      for i, cell in ipairs(cells) do
+        level[cell.y][cell.x] = math.random(1, count)
+      end
+      m = matches(level)
+    end
+    moves = field.getmoves(level)
+    if #moves > 0 then break end
+  end
+  return level
+end
+
+function field.fill(state)
+  field.clear()
+  field.width = #state[1]
+  field.height = #state
+  for y = 1, #state do
+    field[y] = {}
+    for x = 1, #state[1] do
+      field[y][x] = {["x"] = field.x + field.cell.width*(x-0.5), ["y"] = field.y + (y-0.5)*field.cell.height, ["value"] = state[y][x], 
+                     ["selected"] = false, ["angle"] = math.random(0, 359)*math.pi/180, ["alpha"] = 255,
+                     ["rotating"] = {["value"] = "angle", ["speed"] = 0, ["limit"] = {["value"] = 0, ["type"] = "valabs", ["counter"] = 0}},
+                     ["fading"] = {["value"] = "alpha", ["speed"] = 0, ["limit"] = {["value"] = 0, ["type"] = "valabs", ["counter"] = 0}},
+                     ["moving"] = {["x"] = {["value"] = "x", ["speed"] = 0, ["limit"] = {["value"] = 0, ["type"] = "valabs", ["counter"] = 0}},
+                                   ["y"] = {["value"] = "y", ["speed"] = 0, ["limit"] = {["value"] = 0, ["type"] = "valabs", ["counter"] = 0}}}}
+    end
+  end
+end
